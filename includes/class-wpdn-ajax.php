@@ -43,23 +43,35 @@ class WPDN_Ajax {
 	 */
 	 public function wpdn_update_note() {
 
-		$post = array(
-			'ID'			=> $_POST['post_id'],
-			'post_title'	=> $_POST['post_title'],
-			'post_content'	=> $_POST['post_content'],
-		);
+         $post = array();
+         if (isset($_POST['post_id']) && !empty($_POST['post_id'])) {
+             $post['ID'] = $_POST['post_id'];
+         }
+         if (isset($_POST['post_title']) && !empty($_POST['post_title'])) {
+            $post['post_title'] = $_POST['post_title'];
+         }
+         if (isset($_POST['post_content']) && !empty($_POST['post_content'])) {
+             $post['post_content'] = $_POST['post_content'];
+         }
 
-		wp_update_post( $post );
+         wp_update_post( $post );
 
-		$note_meta = array(
-			'color'			=> $_POST['note_color'],
-			'color_text'	=> $_POST['note_color_text'],
-			'visibility'	=> $_POST['note_visibility'],
-			'note_type'		=> $_POST['note_type'],
-		);
-		update_post_meta( $_POST['post_id'], '_note', $note_meta );
+         $note_meta = array();
+         if (isset($_POST['color']) && !empty($_POST['color'])) {
+             $note_meta['color'] = $_POST['note_color'];
+         }
+         if (isset($_POST['color_text']) && !empty($_POST['color_text'])) {
+             $note_meta['color_text'] = $_POST['note_color_text'];
+         }
+         if (isset($_POST['visibility']) && !empty($_POST['visibility'])) {
+             $note_meta['visibility'] = $_POST['note_visibility'];
+         }
+         if (isset($_POST['note_type']) && !empty($_POST['note_type'])) {
+             $note_meta['note_type'] = $_POST['note_type'];
+         }
+         update_post_meta( $_POST['post_id'], '_note', $note_meta );
 
-		die();
+         die();
 
 	}
 

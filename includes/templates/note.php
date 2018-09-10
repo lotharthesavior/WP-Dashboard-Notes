@@ -1,8 +1,12 @@
-		<div class='wp-dashboard-note-wrap regular-note' data-note-type='regular' data-color-text='<?php echo $note_meta['color_text']; ?>' data-note-color='<?php echo $note_meta['color']; ?>'>
+		<div class='wp-dashboard-note-wrap regular-note regular-note-markdown' data-note-type='regular' data-color-text='<?php echo $note_meta['color_text']; ?>' data-note-color='<?php echo $note_meta['color']; ?>'>
 
-			<div class='wp-dashboard-note' contenteditable='true'>
-				<?php echo $content; ?>
-			</div>
+            <?php /*<div id="wp-dashboard-note-<?php echo $note->ID; ?>" class='wp-dashboard-note' contenteditable='true'>*/ ?>
+        <?php /*<div id="wp-dashboard-note-<?php echo $note->ID; ?>" class='wp-dashboard-note'>*/ ?>
+            <textarea
+                    id="wp-dashboard-note-<?php echo $note->ID; ?>"
+                    class='wp-dashboard-note'
+                    style="width: 100%;height: 100%;"
+            ><?php echo $content; ?></textarea>
 
 			<div class='wp-dashboard-note-options'>
 

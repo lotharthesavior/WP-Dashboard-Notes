@@ -9,11 +9,15 @@
    5. Black
    6. Template
    7. Markdown
+   8. Markdown Preview
    ******************************* */
 
 /* *******************************
    0. general
    ******************************* */
+#wpcontent {
+	font-family: 'Montserrat' !important;
+}
 input[type=text].add-list-item {
 	line-height: normal;
 	border-radius: 3px;
@@ -300,8 +304,6 @@ span.wpdn-color-note:hover .wpdn-color-palette {
 	color: white;
 }
 
-
-
 /* ***************************
    6. Template
    ***************************/
@@ -354,11 +356,67 @@ span.wpdn-color-note:hover .wpdn-color-palette {
 .regular-note-markdown {
 	padding-bottom: 50px !important;
 }
+.regular-note-markdown .editor-preview{
+	padding: 20px !important;
+}
 .regular-note-markdown .CodeMirror {
-	padding-top: 0px !important;
-	padding-left: 0px !important;;
-	padding-right: 0px !important;;
+	padding-left: 0px;
+	padding-right: 0px;
 }
 .regular-note-markdown .CodeMirror .CodeMirror-lines {
-	padding: 0px 10px !important;
+	padding: 10px !important;
+}
+.regular-note-markdown .editor-toolbar {
+	display: none !important;
+}
+.CodeMirror-lines::after {
+	right: -50.5vw !important;
+}
+/* *************************
+   8. Markdown Preview
+   ************************* */
+.maxHeight350 {
+	max-height: 350px !important;
+}
+.editor-preview,
+.editor-preview p,
+.editor-preview h1, .editor-preview h2, .editor-preview h3,
+.editor-preview h4, .editor-preview h5, .editor-preview h6 {
+	/*font-family: 'Montserrat' !important;*/
+	font-family: 'Consolas','Liberation','Mono','Menlo',Courier,monospace;
+}
+.editor-preview p, .CodeMirror-code {
+	font-size: 19px !important;
+	line-height: 1.5 !important;
+	letter-spacing: 1px !important;
+}
+.editor-preview h1, h2, h3, h4, h5, h6 {
+	font-weight: bold !important;
+}
+.editor-preview h1 {
+	font-size: 22px;
+	padding-bottom: 10px;
+}
+.editor-preview h2 {
+	font-size: 20px;
+	padding-bottom: 9px;
+}
+.editor-preview h3 {
+	font-size: 18px;
+	padding-bottom: 8px;
+}
+.editor-preview h4 {
+	font-size: 16px;
+	padding-bottom: 7px;
+}
+.editor-preview h5 {
+	font-size: 14px;
+	padding-bottom: 6px;
+}
+.editor-preview h6 {
+	font-size: 12px;
+	padding-bottom: 5px;
+}
+.editor-preview ul {
+	list-style: disc;
 }

@@ -1,3 +1,5 @@
+var simplemdeInstances = {};
+
 jQuery( document ).ready( function($) {
 
 	var loading_icon 	= '<span class="saving-icon"><img src="images/wpspin_light.gif"/> saving...</span>';
@@ -71,8 +73,15 @@ jQuery( document ).ready( function($) {
 			note_type:	( note_type == 'regular' ? 'list' : 'regular' )
 		};
 
+		var that = this;
+
 		$.post( ajaxurl, data, function( response ) {
-			$( '#note_' + data.post_id + ' .inside' ).html( response ).trigger( 'note-sortable' );;
+			var current_container = $( '#note_' + data.post_id + ' .inside' );
+			current_container.html( response ).trigger( 'note-sortable' );
+
+            if (data.note_type === 'regular') {
+                place_markdown($(current_container.find('textarea')));
+            }
 		});
 
 		$( this ).trigger( 'wpdn-update', this );
@@ -172,8 +181,8 @@ jQuery( document ).ready( function($) {
 
 
 	// Edit/update note
-	$( document.body ).on( 'blur', '.list-item-content, [contenteditable=true]', function() {
-  		$( this ).trigger( 'wpdn-update', this );
+    $( document.body ).on( 'blur', '.list-item-content, [contenteditable=true]', function() {
+		$( this ).trigger( 'wpdn-update', this );
 	});
 
 	// Save on enter (list note)
@@ -185,7 +194,7 @@ jQuery( document ).ready( function($) {
 		}
 	});
 	// Save on CMD|CTRL + enter (regular note)
-	$( document.body ).on( 'keydown', '[data-note-type=regular] .wp-dashboard-note', function( e ) {
+    $( document.body ).on( 'keydown', '[data-note-type=regular] .wp-dashboard-note', function( e ) {
 		if ( e.keyCode == 13 && ( e.ctrlKey || e.metaKey ) ) {
 			$( this ).trigger( 'wpdn-update', this );
       		$( this ).blur();
@@ -193,6 +202,10 @@ jQuery( document ).ready( function($) {
 		}
 	});
 
+    // place markdown
+	$('[data-note-type=regular] .wp-dashboard-note').map(function(key, item){
+		place_markdown($(item));
+    });
 
 	// Edit title
 	$( 'body, .postbox .hndle' ).on( 'click', '.wpdn-edit-title', function( e ) {
@@ -240,5 +253,65 @@ jQuery( document ).ready( function($) {
 		var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 		document.execCommand('insertText', false, text);
 	});
+
+	// functions ---
+
+	function place_markdown(item) {
+		var instance = new SimpleMDE({
+            element: item[0],
+            toolbar: ['preview'],
+            status: [],
+            renderingConfig: {
+                singleLineBreaks: true
+            }
+        });
+        instance.value(item.html());
+        var item_id = item.attr('id').split('-')[item.attr('id').split('-').length - 1];
+        simplemdeInstances[item_id] = instance;
+        console.log(item_id);
+
+        // preview
+        simplemdeInstances[item_id].codemirror.on("blur", function(el){
+            save_markdown(item_id, simplemdeInstances[item_id]);
+            simplemdeInstances[item_id].togglePreview();
+
+            $('#note_' + item_id + ' .CodeMirror-wrap').addClass('maxHeight350');
+        });
+
+        // showing editor
+        $(simplemdeInstances[item_id].element).parent().parent().parent().on('dblclick', function(){
+            if (simplemdeInstances[item_id].isPreviewActive()) {
+        		simplemdeInstances[item_id].togglePreview();
+                simplemdeInstances[item_id].codemirror.focus();
+			}
+
+            $('#note_' + item_id + ' .CodeMirror-wrap').removeClass('maxHeight350');
+        });
+
+        // starting hidden
+        simplemdeInstances[item_id].togglePreview();
+        $('#note_' + item_id + ' .CodeMirror-wrap').addClass('maxHeight350');
+    }
+    function save_markdown(post_id, mde_instance) {
+        $( '#' + post_id + ' .hndle .status' ).html( loading_icon );
+
+        var data = {
+            action: 			'wpdn_update_note',
+            post_id: 			post_id.replace( 'note_', '' ),
+            // post_content: 		$( '#' + post_id + ' div.wp-dashboard-note' ).html(),
+            post_content: 		mde_instance.value(),
+            post_title: 		$( '#' + post_id + ' > .hndle .wpdn-title' ).html(),
+            note_visibility:	$( '#' + post_id + ' [data-visibility]' ).attr( 'data-visibility' ),
+            note_color_text:	$( '#' + post_id + ' [data-color-text]' ).attr( 'data-color-text' ),
+            note_color:			$( '#' + post_id + ' [data-note-color]' ).attr( 'data-note-color' ),
+            // note_type:			$( '#' + post_id + ' [data-note-type]' ).attr( 'data-note-type' ),
+            note_type:			'regular'
+        };
+
+        $.post( ajaxurl, data, function( response ) {
+            $( '#' + post_id + ' .hndle .status' ).html( saved_icon );
+            $( '#' + post_id + ' .hndle .status *' ).fadeOut( 1000, function() { $( this ).html( '' ) });
+        });
+	}
 
 });

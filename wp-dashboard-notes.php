@@ -153,10 +153,12 @@ class WP_Dashboard_Notes {
 	public function admin_enqueue_scripts() {
 
 		// Javascript
-		wp_enqueue_script( 'wpdn_admin_js', plugin_dir_url( __FILE__ ) . 'assets/js/wp-dashboard-notes-admin.min.js', array( 'jquery', 'jquery-ui-sortable' ), $this->version );
+//		wp_enqueue_script( 'wpdn_admin_js', plugin_dir_url( __FILE__ ) . 'assets/js/wp-dashboard-notes-admin.min.js', array( 'jquery', 'jquery-ui-sortable' ), $this->version );
+		wp_enqueue_script( 'wpdn_admin_js', plugin_dir_url( __FILE__ ) . 'assets/js/wp-dashboard-notes-admin.js', array( 'jquery', 'jquery-ui-sortable' ), $this->version );
 
 		// Stylesheet
-		wp_enqueue_style( 'wpdn_admin_css', plugin_dir_url( __FILE__ ) . 'assets/css/wp-dashboard-notes-admin.min.css', array( 'dashicons' ), $this->version );
+//		wp_enqueue_style( 'wpdn_admin_css', plugin_dir_url( __FILE__ ) . 'assets/css/wp-dashboard-notes-admin.min.css', array( 'dashicons' ), $this->version );
+		wp_enqueue_style( 'wpdn_admin_css', plugin_dir_url( __FILE__ ) . 'assets/css/wp-dashboard-notes-admin.css', array( 'dashicons' ), $this->version );
 
 	}
 
@@ -252,9 +254,11 @@ class WP_Dashboard_Notes {
 	 */
 	public function wpdn_render_dashboard_widget( $post, $args ) {
 
-		$note		= $args['args'];
+	    $note		= $args['args'];
 		$note_meta	= $this->wpdn_get_note_meta( $note->ID );
-		$content	= apply_filters( 'wpdn_content', $note->post_content );
+//		echo "<pre>";var_dump($note->post_content);exit;
+//		$content	= apply_filters( 'wpdn_content', $note->post_content );
+		$content	= $note->post_content;
 		$colors		= apply_filters( 'wpdn_colors', array(
 			'white'		=> '#fff',
 			'red'		=> '#f7846a',
